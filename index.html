@@ -1,96 +1,203 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Self-Retro</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Self-Retro (Lite+)</title>
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
+    :root{--bg1:#a1c4fd;--bg2:#c2e9fb;--card:#ffffffc0;--ink:#222;--muted:#667085;--primary:#4a90e2}
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; color:var(--ink);
+      background:linear-gradient(135deg,var(--bg1),var(--bg2)); min-height:100vh; display:flex; flex-direction:column; align-items:center;
     }
-    header {
-      background-color: rgba(255,255,255,0.7);
-      backdrop-filter: blur(10px);
-      padding: 1rem 2rem;
-      margin-top: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    h1 {
-      margin: 0;
-      color: #333;
-    }
-    main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-      max-width: 600px;
-      padding: 2rem;
-    }
-    textarea {
-      width: 100%;
-      height: 200px;
-      padding: 1rem;
-      font-size: 1rem;
-      border-radius: 8px;
-      border: none;
-      resize: none;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    button {
-      margin-top: 1rem;
-      padding: 0.75rem 1.5rem;
-      border: none;
-      background-color: #4a90e2;
-      color: white;
-      font-size: 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    button:hover {
-      background-color: #357ABD;
-    }
-    footer {
-      padding: 1rem;
-      font-size: 0.9rem;
-      color: #555;
-    }
+    header{margin:24px 0; padding:12px 20px; background:var(--card); backdrop-filter:blur(10px); border-radius:12px; box-shadow:0 6px 24px rgba(0,0,0,.1)}
+    main{width:min(960px,92vw); margin:0 auto 32px; display:grid; gap:20px; grid-template-columns:2fr 1fr}
+    @media (max-width:900px){main{grid-template-columns:1fr}}
+    .card{background:var(--card); border-radius:14px; box-shadow:0 6px 20px rgba(0,0,0,.08); padding:18px}
+    h1{margin:0; font-size:22px; display:flex; align-items:center; gap:10px}
+    h2{margin:0 0 10px; font-size:18px}
+    .muted{color:var(--muted); font-size:13px}
+    textarea{width:100%; height:180px; padding:12px; border-radius:10px; border:1px solid #e5e7eb; resize:vertical; font-size:14px}
+    .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    input[type="number"], input[type="text"]{padding:8px 10px; border:1px solid #e5e7eb; border-radius:10px}
+    button{cursor:pointer; border:0; border-radius:10px; padding:10px 14px; background:var(--primary); color:#fff; font-weight:600}
+    button.secondary{background:#eef2ff; color:#1f2937}
+    button.ghost{background:transparent; color:#1f2937}
+    .list{display:flex; flex-direction:column; gap:10px; max-height:440px; overflow:auto}
+    .item{border:1px solid #e5e7eb; border-radius:12px; padding:12px; background:#fff}
+    .item .meta{font-size:12px; color:var(--muted); display:flex; gap:10px; flex-wrap:wrap}
+    .chip{padding:.25rem .55rem; border:1px solid #cbd5e1; border-radius:999px; font-size:12px}
+    .controls{display:flex; gap:8px; flex-wrap:wrap}
+    .toolbar{display:flex; gap:8px; flex-wrap:wrap}
+    .divider{height:1px; background:#e5e7eb; margin:12px 0}
+    .right{display:flex; gap:10px; align-items:center; justify-content:space-between}
+    small{font-size:12px}
   </style>
 </head>
 <body>
   <header>
-    <h1>📓 Self-Retro</h1>
+    <h1>📓 Self-Retro <span class="muted">· 브라우저에만 저장(Local)</span></h1>
   </header>
-  <main>
-    <p>오늘 하루를 돌아보고 기록해 보세요.</p>
-    <textarea id="diary" placeholder="여기에 오늘의 회고를 적으세요..."></textarea>
-    <button onclick="saveEntry()">저장하기</button>
-  </main>
-  <footer>
-    Made with ❤️ for Self-Development
-  </footer>
 
-  <script>
-    function saveEntry() {
-      const text = document.getElementById('diary').value;
-      if(text.trim() === "") {
-        alert("내용을 입력하세요!");
-        return;
-      }
-      const date = new Date().toLocaleDateString();
-      localStorage.setItem(`entry-${date}`, text);
-      alert("저장되었습니다!");
-    }
-  </script>
+  <main>
+    <!-- 왼쪽: 오늘 기록 -->
+    <section class="card">
+      <h2>오늘 회고</h2>
+      <p class="muted">Forward/Back/Constraint를 한 문단으로 적어도 좋습니다.</p>
+      <textarea id="text" placeholder="오늘의 회고를 적어 보세요..."></textarea>
+
+      <div class="row" style="margin:10px 0">
+        <label>기분</label><input id="mood" type="range" min="1" max="5" value="3">
+        <label>에너지</label><input id="energy" type="range" min="1" max="5" value="3">
+        <label>집중</label><input id="focus" type="range" min="1" max="5" value="3">
+        <label>Deep-work(분)</label><input id="minutes" type="number" min="0" value="0" style="width:90px">
+      </div>
+
+      <div class="row">
+        <input id="commit" type="text" placeholder="내일의 2분 약속 (예: 오전 9시 25분 책 3쪽) " style="flex:1">
+        <button id="save">저장</button>
+      </div>
+
+      <div id="toast" class="muted" style="margin-top:8px;height:18px"></div>
+      <div class="divider"></div>
+      <small class="muted">* 같은 날짜의 기존 기록은 새 내용으로 대체됩니다.</small>
+    </section>
+
+    <!-- 오른쪽: 스냅샷/백업/초기화 -->
+    <aside class="card">
+      <h2>스냅샷</h2>
+      <div class="right">
+        <div>
+          <div>연속일수: <b id="streak">0</b>일</div>
+          <div class="muted">최근 7일 평균 기분: <b id="avgMood">-</b></div>
+        </div>
+        <div class="toolbar">
+          <button id="export" class="secondary">Export JSON</button>
+          <label class="secondary" style="display:inline-block; padding:8px 12px; border-radius:10px; border:1px solid #e5e7eb; cursor:pointer">
+            Import JSON
+            <input id="import" type="file" accept="application/json" style="display:none">
+          </label>
+          <button id="reset" class="ghost" title="모든 데이터 삭제">Reset</button>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <details open>
+        <summary><b>3·7·30일 전 회고</b></summary>
+        <div id="spaced" class="list" style="margin-top:8px"></div>
+      </details>
+    </aside>
+
+    <!-- 아래: 최근 7일 -->
+    <section class="card" style="grid-column:1/-1">
+      <h2>최근 7일 기록</h2>
+      <div id="recent" class="list"></div>
+    </section>
+  </main>
+
+  <footer class="muted" style="margin:0 0 16px">© <span id="yy"></span> Self-Retro · Local-first</footer>
+
+<script>
+const KEY='sr_lite_entries';
+const $=s=>document.querySelector(s);
+const today=()=>new Date().toISOString().slice(0,10);
+const ymd=d=>d.toISOString().slice(0,10);
+const daysAgo=n=>{const d=new Date(); d.setDate(d.getDate()-n); return ymd(d);};
+
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY)||'[]'); }catch{ return []; } }
+function save(v){ localStorage.setItem(KEY, JSON.stringify(v)); }
+function setToast(msg){ const t=$('#toast'); t.textContent=msg; setTimeout(()=>t.textContent='',1500); }
+function mean(a){ return a.length? (a.reduce((s,c)=>s+c,0)/a.length).toFixed(1):'-'; }
+function streak(entries){
+  const set=new Set(entries.map(e=>e.date)); let k=0;
+  for(let i=0;;i++){ if(!set.has(daysAgo(i))) break; k++; } return k;
+}
+
+function upsertToday(){
+  const entries=load().filter(e=>e.date!==today());
+  entries.push({
+    id:crypto.randomUUID(),
+    date:today(),
+    text:$('#text').value.trim(),
+    mood:+$('#mood').value, energy:+$('#energy').value, focus:+$('#focus').value,
+    minutes:+$('#minutes').value, commit:$('#commit').value.trim()
+  });
+  entries.sort((a,b)=>a.date.localeCompare(b.date));
+  save(entries);
+}
+
+function render(){
+  const entries=load();
+  // 스냅샷
+  $('#streak').textContent=streak(entries);
+  const last7=entries.slice(-7);
+  $('#avgMood').textContent=mean(last7.map(e=>e.mood||0));
+
+  // Spaced review
+  const spaced=$('#spaced'); spaced.innerHTML='';
+  [3,7,30].forEach(d=>{
+    const e=entries.find(x=>x.date===daysAgo(d));
+    const div=document.createElement('div'); div.className='item';
+    div.innerHTML = `<div class="meta"><b>${d}일 전 (${daysAgo(d)})</b></div>
+      <div>${e? (e.text? e.text.replace(/\n/g,'<br>'):'(내용 없음)'):'(기록 없음)'}</div>`;
+    spaced.appendChild(div);
+  });
+
+  // 최근 7일
+  const recent=$('#recent'); recent.innerHTML='';
+  last7.reverse().forEach(e=>{
+    const el=document.createElement('div'); el.className='item';
+    el.innerHTML = `
+      <div class="meta"><b>${e.date}</b>
+        <span class="chip">🙂 ${e.mood}</span>
+        <span class="chip">⚡ ${e.energy}</span>
+        <span class="chip">🎯 ${e.focus}</span>
+        <span class="chip">⏱ ${e.minutes}m</span>
+      </div>
+      <div style="margin-top:6px">${(e.text||'').replace(/\n/g,'<br>')}</div>
+      ${e.commit? `<div class="muted" style="margin-top:6px">내일 약속: ${e.commit}</div>`:''}
+    `;
+    recent.appendChild(el);
+  });
+}
+
+// 저장
+$('#save').onclick=()=>{
+  upsertToday();
+  setToast('저장 완료 ✔');
+  render();
+};
+
+// Export
+$('#export').onclick=()=>{
+  const blob=new Blob([JSON.stringify(load(),null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='self-retro.json'; a.click();
+  URL.revokeObjectURL(a.href);
+};
+
+// Import
+$('#import').onchange=e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const data=JSON.parse(r.result);
+      if(Array.isArray(data)){ save(data); render(); alert('가져오기 완료'); }
+      else alert('JSON 형식이 아닙니다.');
+    }catch{ alert('JSON 파싱 오류'); }
+  };
+  r.readAsText(f);
+};
+
+// Reset
+$('#reset').onclick=()=>{
+  if(confirm('모든 데이터를 삭제할까요?')){ localStorage.removeItem(KEY); render(); }
+};
+
+$('#yy').textContent=new Date().getFullYear();
+render();
+</script>
 </body>
 </html>
