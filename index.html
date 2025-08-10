@@ -1,12 +1,96 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Self-Retrospective</title>
-  </head>
-  <body class="bg-zinc-50 dark:bg-black">
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Self-Retro</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    header {
+      background-color: rgba(255,255,255,0.7);
+      backdrop-filter: blur(10px);
+      padding: 1rem 2rem;
+      margin-top: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h1 {
+      margin: 0;
+      color: #333;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 600px;
+      padding: 2rem;
+    }
+    textarea {
+      width: 100%;
+      height: 200px;
+      padding: 1rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+      resize: none;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    button {
+      margin-top: 1rem;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      background-color: #4a90e2;
+      color: white;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #357ABD;
+    }
+    footer {
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📓 Self-Retro</h1>
+  </header>
+  <main>
+    <p>오늘 하루를 돌아보고 기록해 보세요.</p>
+    <textarea id="diary" placeholder="여기에 오늘의 회고를 적으세요..."></textarea>
+    <button onclick="saveEntry()">저장하기</button>
+  </main>
+  <footer>
+    Made with ❤️ for Self-Development
+  </footer>
+
+  <script>
+    function saveEntry() {
+      const text = document.getElementById('diary').value;
+      if(text.trim() === "") {
+        alert("내용을 입력하세요!");
+        return;
+      }
+      const date = new Date().toLocaleDateString();
+      localStorage.setItem(`entry-${date}`, text);
+      alert("저장되었습니다!");
+    }
+  </script>
+</body>
 </html>
